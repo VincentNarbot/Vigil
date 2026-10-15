@@ -11,7 +11,7 @@ xcrun swiftc -O -target arm64-apple-macos13 Sources/main.swift -o "$APP/Contents
 cp Info.plist "$APP/Contents/Info.plist"
 codesign --force --sign - "$APP"
 
-pkill -x Vigil 2>/dev/null || true
+pkill -x Vigil 2>/dev/null && sleep 1 || true
 rm -rf ~/Applications/Vigil.app
 cp -R "$APP" ~/Applications/Vigil.app
 open ~/Applications/Vigil.app

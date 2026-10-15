@@ -1,19 +1,22 @@
 # Vigil
 
-A tiny macOS menu bar app that keeps your Mac awake **while the screen stays locked**.
+**Keep your AI agents running locally, with your Mac locked.**
 
-Most keep-awake apps hold the display on, which means you can't lock and walk away. Vigil only prevents *system* sleep by default, so the display can turn off and the screen can lock while long-running jobs, coding agents, builds, downloads or remote sessions keep going. You can't use the Mac, but your agents can.
+Coding agents (Claude Code, Codex, Cursor and friends) run on your Mac. You can drive them from your phone, but only while the Mac is awake. Lock the screen and walk away, and macOS soon puts the Mac to sleep, which stops every agent and drops your remote connection.
 
-## Features
+Vigil is a tiny menu bar app that fixes exactly that. It keeps the Mac itself awake but lets the display turn off and the screen lock. Anyone sitting at your desk sees only a locked screen, while your agents keep working and stay reachable from your phone.
 
-- **Keep Mac Awake (screen can lock)**: prevents idle system sleep, allows display sleep and screen lock (default)
-- **Keep Mac and Display Awake**: classic caffeinate-style behavior
-- **Only When on Power Adapter**: pauses automatically on battery (on by default)
-- **Stay Awake With Lid Closed**: toggles `pmset disablesleep` (asks for an admin password; runs warmer, so keep the Mac on a hard surface)
-- **Lock Screen Now**
+Most keep-awake apps hold the display on instead, which means you can't lock and leave.
+
+## Menu
+
+- **Keep Mac Awake**: on by default. Only active on the power adapter; on battery it pauses and the cup icon turns empty.
+- **Lock Screen**
 - **Launch at Login**
 
 One Swift file, no dependencies, no network access.
+
+Want it to keep running with the lid closed and no external display? Run `sudo pmset -a disablesleep 1` (undo with `0`). It runs warmer, so keep the Mac on a hard surface.
 
 ## Build
 
@@ -27,7 +30,7 @@ This builds `Vigil.app`, ad-hoc signs it, installs it to `~/Applications` and la
 
 ## How it works
 
-Vigil holds an IOKit power assertion: `PreventUserIdleSystemSleep` (or `PreventUserIdleDisplaySleep` in display mode). You can see it with:
+Vigil holds an IOKit `PreventUserIdleSystemSleep` power assertion. You can see it with:
 
 ```sh
 pmset -g assertions | grep Vigil
