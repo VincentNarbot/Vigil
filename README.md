@@ -8,6 +8,8 @@ Vigil is a tiny menu bar app that fixes exactly that. It keeps the Mac itself aw
 
 Most keep-awake apps hold the display on instead, which means you can't lock and leave.
 
+<p align="center"><img src="docs/menu.png" alt="Vigil menu" width="338"></p>
+
 ## Menu
 
 - **Keep Mac Awake while Locked**: the screen can turn off and lock (default).
