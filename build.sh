@@ -7,7 +7,7 @@ APP=build/Vigil.app
 rm -rf build
 mkdir -p "$APP/Contents/MacOS"
 
-xcrun swiftc -O -target arm64-apple-macos13 Sources/main.swift -o "$APP/Contents/MacOS/Vigil"
+xcrun swiftc -O -target arm64-apple-macos14.4 Sources/main.swift -o "$APP/Contents/MacOS/Vigil"
 cp Info.plist "$APP/Contents/Info.plist"
 codesign --force --sign - "$APP"
 

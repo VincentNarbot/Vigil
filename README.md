@@ -10,9 +10,12 @@ Most keep-awake apps hold the display on instead, which means you can't lock and
 
 ## Menu
 
-- **Keep Mac Awake**: on by default. Only active on the power adapter; on battery it pauses and the cup icon turns empty.
-- **Lock Screen**
-- **Launch at Login**
+- **Keep Mac Awake while Locked**: the screen can turn off and lock (default).
+- **Keep Display On**: the screen stays on too.
+- **Keep Awake For**: indefinitely, or 15 minutes to 8 hours. Timed sessions show a countdown next to the icon.
+- **Turn Off**, **Lock Screen**, **Launch at Login**
+
+Vigil only holds the Mac awake on the power adapter; on battery it pauses and the cup icon turns empty.
 
 One Swift file, no dependencies, no network access.
 
@@ -20,7 +23,7 @@ Want it to keep running with the lid closed and no external display? Run `sudo p
 
 ## Build
 
-Requires macOS 13+ and the Xcode command line tools.
+Requires macOS 14.4+ and the Xcode command line tools.
 
 ```sh
 ./build.sh
@@ -30,7 +33,7 @@ This builds `Vigil.app`, ad-hoc signs it, installs it to `~/Applications` and la
 
 ## How it works
 
-Vigil holds an IOKit `PreventUserIdleSystemSleep` power assertion. You can see it with:
+Vigil holds an IOKit `PreventUserIdleSystemSleep` power assertion (`PreventUserIdleDisplaySleep` with Keep Display On). You can see it with:
 
 ```sh
 pmset -g assertions | grep Vigil
