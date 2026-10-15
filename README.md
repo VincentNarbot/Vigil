@@ -23,11 +23,28 @@ One Swift file, no dependencies, no network access.
 
 Want it to keep running with the lid closed and no external display? Run `sudo pmset -a disablesleep 1` (undo with `0`). It runs warmer, so keep the Mac on a hard surface.
 
-## Build
+## Install
+
+### Ask your agent
+
+Paste this into Claude Code, Codex, Cursor or any coding agent running on your Mac:
+
+```text
+Install Vigil (https://github.com/VincentNarbot/Vigil) on this Mac:
+1. Check that the Xcode command line tools are installed (xcode-select -p); if not, run xcode-select --install and wait for me.
+2. Clone the repo into ~/Developer/Vigil (or update it if it already exists).
+3. Read Sources/main.swift and build.sh so you know what you are running, then run ./build.sh.
+4. Confirm Vigil is running with: pmset -g assertions | grep Vigil
+5. Tell me to open the cup icon in the menu bar and turn on Launch at Login.
+```
+
+### Or build it yourself
 
 Requires macOS 14.4+ and the Xcode command line tools.
 
 ```sh
+git clone https://github.com/VincentNarbot/Vigil.git
+cd Vigil
 ./build.sh
 ```
 
@@ -45,4 +62,6 @@ Quitting Vigil releases the assertion immediately.
 
 ## License
 
-MIT
+This app is provided free of use. Use it the way that you want. Enjoy ☕
+
+Released under the [MIT License](LICENSE).
