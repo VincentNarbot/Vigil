@@ -17,7 +17,7 @@ Most keep-awake apps hold the display on instead, which means you can't lock and
 - **Keep Awake For**: indefinitely, or 15 minutes to 8 hours. Timed sessions show a countdown next to the icon.
 - **Turn Off**, **Lock Screen**, **Launch at Login**
 
-Vigil only holds the Mac awake on the power adapter; on battery it pauses and the cup icon turns empty.
+Vigil keeps working on battery too; use **Turn Off** when you don't need it.
 
 One Swift file, no dependencies, no network access.
 

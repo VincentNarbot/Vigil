@@ -1,6 +1,5 @@
 // Vigil: keeps the Mac awake so agents keep working, while the screen can stay locked.
 import AppKit
-import IOKit.ps
 import IOKit.pwr_mgt
 import ServiceManagement
 
@@ -25,7 +24,6 @@ final class Vigil: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let defaults = UserDefaults.standard
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var assertionID: IOPMAssertionID = 0
-    private var powerSource: CFRunLoopSource?
     private var ticker: Timer?
 
     private var isOn = false
@@ -42,16 +40,6 @@ final class Vigil: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.delegate = self
         statusItem.menu = menu
         statusItem.button?.imagePosition = .imageLeading
-
-        // Re-evaluate when switching between charger and battery.
-        let context = Unmanaged.passUnretained(self).toOpaque()
-        if let source = IOPSNotificationCreateRunLoopSource({ ctx in
-            guard let ctx else { return }
-            Unmanaged<Vigil>.fromOpaque(ctx).takeUnretainedValue().apply()
-        }, context)?.takeRetainedValue() {
-            powerSource = source
-            CFRunLoopAddSource(CFRunLoopGetMain(), source, .defaultMode)
-        }
 
         // Only an indefinite session resumes after relaunch.
         if defaults.object(forKey: "enabled") as? Bool ?? true { start(minutes: 0) } else { apply() }
@@ -90,18 +78,9 @@ final class Vigil: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: Power assertion
 
-    private var isOnACPower: Bool {
-        let info = IOPSCopyPowerSourcesInfo().takeRetainedValue()
-        let type = IOPSGetProvidingPowerSourceType(info).takeUnretainedValue() as String
-        return type == kIOPMACPowerKey
-    }
-
-    // Only holds the Mac awake on the charger.
-    private var isActive: Bool { isOn && isOnACPower }
-
     private func apply() {
         release()
-        if isActive {
+        if isOn {
             IOPMAssertionCreateWithName(mode.assertion as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn),
                                         "Vigil: keep Mac awake" as CFString, &assertionID)
         }
@@ -128,9 +107,9 @@ final class Vigil: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func updateButton() {
         guard let button = statusItem.button else { return }
-        let symbol = !isActive ? "cup.and.saucer" : (mode == .display ? "sun.max.fill" : "cup.and.saucer.fill")
+        let symbol = !isOn ? "cup.and.saucer" : (mode == .display ? "sun.max.fill" : "cup.and.saucer.fill")
         button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Vigil")
-        let title = isActive ? remaining.map { " \($0)" } ?? "" : ""
+        let title = isOn ? remaining.map { " \($0)" } ?? "" : ""
         button.attributedTitle = NSAttributedString(string: title, attributes: [
             .font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular),
         ])
@@ -138,7 +117,6 @@ final class Vigil: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private var statusText: String {
         if !isOn { return "Mac can sleep normally" }
-        if !isOnACPower { return "Paused on battery" }
         guard let endDate else { return "Awake until turned off" }
         return "Awake until \(endDate.formatted(date: .omitted, time: .shortened))"
     }
